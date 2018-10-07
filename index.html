@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+    <head>
+        <title>BlindParty</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" type="text/css" media="all" />
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+		<link rel="stylesheet" href="/css/style.css" type="text/css" media="all" />
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/fastclick.js"></script>
+        <script src="/js/noSleep.js"></script>
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+		<script src="/js/script-ext.js"></script>
+    </head>
+    <body>
+        <ul id="messages"></ul>
+        <div id="client">
+            <button id="bAdmin" class="btn btn-default">ADMIN</button>
+            <div class="col-12 text-center">
+                <h2 id="userQuestion"></h2>
+            </div>
+            <div class="col-12 text-center">
+                <button id="bAnswer" disabled="disabled" class="btn btn-primary btn-xl">REPONDRE</button>
+            </div>
+            <div class="col-12 text-center">
+                <span id="time"></span>
+                <button id="bShowAnswer" class="btn btn-primary btn-xl">MONTRER LA REPONSE</button>
+                <h2 id="clientAnswer"></h2>
+                <button id="bUserTrue" class="btn btn-success">CORRECT</button>
+                <button id="bUserWrong" class="btn btn-danger">FAUX</button>
+            </div>
+			<div id="parameters">
+				<div class="row">
+					<div class="col-2">
+						<button type="button" class="btn btn-info" id="bUserScores" data-toggle="modal" data-target="#modalScores">
+							<i class="fas fa-list-ol"></i> <span class="d-none d-md-inline">Scores</span>
+						</button>
+					</div>
+					<div id="userInfos" class="col-8 text-center">
+					</div>
+					<div class="col-2">
+						<button type="button" class="btn btn-secondary float-right" data-toggle="modal" data-target="#modalParameters">
+							<i class="fas fa-wrench"></i> <span class="d-none d-md-inline">Paramètres</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal -->
+			<div class="modal fade" id="modalScores" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Scores</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<ol>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="modalParameters" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Paramètres</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					  </div>
+					  <div class="modal-body">
+						<div class="row">
+							<div class="input-group mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text" id="basic-pseudo">Pseudo</span>
+								</div>
+								<input type="text" class="form-control" id="userName" value="" aria-describedby="basic-pseudo">
+							</div>
+						</div>
+						<div class="row">
+							<div class="input-group mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text" id="basic-personnage">Personnage</span>
+								</div>
+								<select id="userSound" class="form-control" aria-describedby="basic-personnage">
+									<option value="1">Canard</option>
+									<option value="2">Chien</option>
+									<option value="3">Chat</option>
+									<option value="4">Vache</option>
+									<option value="5">Coq</option>
+									<option value="6">T-Rex</option>
+									<option value="7">Cochon</option>
+									<option value="8">Chèvre</option>
+									<option value="9">Tigre</option>
+									<option value="10">Goeland</option>
+								</select>
+							</div>
+						</div>
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="bSaveParameters" data-dismiss="modal">ENREGISTRER</button>
+					  </div>
+					</div>
+				</div>
+			</div>
+		</div>
+        <div id="admin">
+			<div class="card">
+				<div class="card-body">
+					<div id="question">
+						<audio id="questionAudio" controls>
+							<source id="questionAudioSource" src="" type="audio/mpeg">
+							Your browser does not support the audio element.
+						</audio>
+						<audio id="answerUserSound" controls>
+							<source id="answerUserSoundSource" src="" type="audio/mpeg">
+							Your browser does not support the audio element.
+						</audio>
+					</div>
+					<div id="playerYoutube">
+						
+					</div>
+					<div id="actions">
+						<button id="bStart" class="btn btn-default"><i class="fas fa-play"></i> START</button>
+						<button id="bNext" class="btn btn-success">NEXT <i class="fas fa-step-forward"></i></button>
+						<button id="bReset" class="btn btn-default float-right"><i class="fas fa-trash-alt"></i> RESET</button>
+					</div>
+				</div>
+			</div>
+            <div id="quizz" class="col-12 row">
+                <div class="col-8 text-center">
+                    <h2 id="adminQuestion">
+                    </h2>
+                    <span id="questionImage">
+                        <img id="questionImageSource" src="" alt="" width="237" />
+                    </span>
+                    <h2 id="adminAnswer">
+                    </h2>
+                    <div id="userAnswer">
+                        <h2 id="answerUserName"></h2>
+                    </div>
+                </div>
+                <div id="users" class="col-4">
+                    <ol class="list-group">
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+		<script src="/js/script.js"></script>
+    </body>
+</html>
