@@ -27,3 +27,13 @@ Run the server
 ```bash
 node server.js
 ```
+## Extra JS libraries
+The application use 2 external JS libraries
+
+### Fastclick
+https://github.com/ftlabs/fastclick
+To remove click delays on browsers with touch UIs
+
+### NoSleep
+https://github.com/richtr/NoSleep.js
+To Prevent display sleep and enable wake lock in any Android or iOS web browser
