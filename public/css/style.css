@@ -1,5 +1,6 @@
 * { margin: 0; padding: 0; box-sizing: border-box;}
 body { font: 13px Helvetica, Arial; font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;}
+#client {margin-top: 50px;}
 #parameters { border-top: 1px solid white; padding: 8px; position: fixed; bottom: 0; width: 100%; }
 #admin, #bShowAnswer, #clientAnswer, #bUserWrong, #bUserTrue { display : none;}
 #messages { list-style-type: none; margin: 0; padding: 0; }

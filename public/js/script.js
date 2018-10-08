@@ -17,6 +17,7 @@ function reset() {
 }
 
 function startTimer(duration, display) {
+	display.text('0' + duration + 's');
 	var timer = duration, seconds;
 	var refreshIntervalId = setInterval(function () {
 		seconds = parseInt(timer % 60, 10);
