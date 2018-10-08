@@ -140,7 +140,7 @@ io.on('connection', function(socket){
 	socket.on('saveParameters', function(parameters) {
 		console.log('SaveParameters (by ' + users[findIndex(users, currentUser.id)].name + ')');
 		currentUser.name = parameters.userName;
-		currentUser.identity = parameters.userSound;
+		currentUser.identity = parameters.identity;
         sendUsers();
 	});
     socket.on('showAnswer', function() {

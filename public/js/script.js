@@ -78,9 +78,9 @@ $('#bReset').on("click", function() {
 $('#bSaveParameters').on("click", function() {
 	parameters = {
 		userName : $('#userName').val(),
-		userSound : $('#userSound').val()
+		userIdentity : $('#userIdentity').val()
 	};
-	$('#userInfos').html('<img src="image/user/' + $('#userSound').val() + '.jpg" width="32" height="32" /> ' + $('#userName').val());
+	$('#userInfos').html('<img src="image/user/' + $('#userIdentity').val() + '.jpg" width="32" height="32" /> ' + $('#userName').val());
 	socket.emit('saveParameters', parameters);
 });
 $('#bShowAnswer').on("click", function(){
