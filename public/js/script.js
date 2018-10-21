@@ -3,6 +3,7 @@ var audio = document.getElementById("questionAudio");
 var userSound = document.getElementById("answerUserSound");
 var alreadyAnswered = false;
 var questionType = '';
+var isAdmin = false;
 
 function compare(a,b) {
 	if (a.score < b.score)
@@ -35,12 +36,31 @@ function startTimer(duration, display) {
 }
 
 function generateUser(user) {
-	return '<div class="user clearfix" style="width: 208px; margin: 5px; border: 1px solid lightblue; border-radius: 8px; padding: 3px;"><div class="userIdentity float-left" style="width: 32px;"><img src="image/user/' + user.identity + '.jpg" width="32" height="32" /></div><div class="userName float-left text-center" style="width: 100px; height: 32px; padding-top: 8px;">' + user.name + '</div><div class="userScore float-left text-right" style="width: 68px; height: 32px; padding-top: 8px;">' + user.score + ' pts</div></div><div>';
+	return '<div class="user card mt-1" style="width: 15rem;"><div class="row pr-3"><div class="userIdentity col-2"><img src="image/user/' + user.identity + '.jpg" width="32" height="32" /></div><div class="userName col-8 text-center pt-1">' + user.name + '</div><div class="userScore col-2 text-right pl-0 pr-1 pt-1">' + user.score + ' pts</div></div></div><div>';
+}
+
+function generateListQuizz(quizzList) {
+	console.log(quizzList);
+	var len = quizzList.length;
+	$('#sQuizz').html('');
+
+	while (len--) {
+		$('#sQuizz').append('<option value="' + quizzList[len].id + '">' + quizzList[len].name + '</option>');
+	}
 }
 
 function pause() {
 	audio.pause();
 	player.pauseVideo();
+}
+
+function changeButton(cssClass) {
+	if(!isAdmin) {
+		$('#bAnswer').removeClass('btn-primary');
+		$('#bAnswer').removeClass('btn-danger');
+		$('#bAnswer').removeClass('btn-success');
+		$('#bAnswer').addClass('btn-' + cssClass);
+	}
 }
 
 //SEND
@@ -55,8 +75,12 @@ $('#bAdmin').on("click", function() {
 	$('#admin').show();
 });
 $('#bStart').on("click", function() {
-	socket.emit('start');
-	$('#bStart').hide;
+	parameters = {
+		quizz : $('#sQuizz').val()
+	};
+	socket.emit('start', parameters);
+	$('#bStart').hide();
+	$('#sQuizz').hide();
 	$('#bNext').show();
 });
 $('#bUserWrong').on("click", function() {
@@ -72,6 +96,7 @@ $('#bUserTrue').on("click", function() {
 	$('#clientAnswer').hide();
 	$('#bUserWrong').hide();
 	$('#bUserTrue').hide();
+	changeButton('success');
 });
 $('#bReset').on("click", function() {
 	socket.emit('reset');
@@ -97,6 +122,7 @@ $('#bNext').on("click", function(){
 
 //RECEIPT
 socket.on('answer', function(msg){
+	changeButton('danger');
 	console.log('answer');
 	console.log(msg);
 	$('#bAnswer').prop('disabled', true);
@@ -111,12 +137,21 @@ socket.on('userAnswer', function(msg){
 	userSound.play();
 });
 socket.on('faster', function() {
+	changeButton('primary');
 	startTimer(3, $('#time'));
 	$('#time').show();
 	alreadyAnswered = true; 
 });
-socket.on('admin', function(){
+//L'utilisateur devient admin
+socket.on('admin', function(msg) {
+	console.log(msg);
+	isAdmin = true;
 	$('#bAdmin').attr('disabled', 'disabled');
+});
+//L'admin reçoit la liste des quizz
+socket.on('quizzList', function(msg) {
+	console.log(msg);
+	generateListQuizz(msg);
 });
 //L'admin reçoit une question
 socket.on('question', function(msg){
@@ -146,6 +181,7 @@ socket.on('newQuestion', function(msg){
 	console.log('newQuestion');
 	$('#userQuestion').html(msg);
 	$('#bAnswer').prop('disabled', false);
+	changeButton('success');
 	$('#bShowAnswer').hide();
 	alreadyAnswered = false;
 });
@@ -153,6 +189,9 @@ socket.on('wrong', function(){
 	console.log('Wrong');
 	if(!alreadyAnswered) {
 		$('#bAnswer').prop('disabled', false);
+		changeButton('success');
+	} else {
+		changeButton('danger');
 	}
 });
 socket.on('continue', function(){
@@ -193,8 +232,9 @@ socket.on('users', function(msg) {
 		}
 	}
 });
-socket.on('noAdmin', function(msg){
+socket.on('noAdmin', function(msg) {
 	console.log('NoAdmin');
+	isAdmin = false;
 	$('#bAdmin').hide();
 });
 

@@ -9,6 +9,7 @@ var config = require('./config');
 var dbConnection = mysql.createConnection(config.db);
 var users = [];
 var questions = [99999999];
+var quizzList = [];
 var userNumber = 1;
 var answering = 0;
 var admin = '';
@@ -18,7 +19,12 @@ var question = [
 	'label': '',
 	'answer': '',
 	'type': 'music'
-}]
+}];
+var quizz = 
+{
+	'id': 0,
+	'name': '',
+};
 
 app.use(express.static('public'));
 
@@ -43,12 +49,12 @@ function findIndex(arr, id) {
 };
 
 
-function nextQuestion() {
+function nextQuestion(idQuizz) {
     console.log('NextQuestion');
     answering = 0;
     console.log(questions);
     //var post  = {id: 1};
-    var query = dbConnection.query("SELECT id, label, answer, type, src FROM question WHERE id NOT IN (?) AND diffusion = 0 ORDER BY RAND() LIMIT 1", [questions], function(err, result) {
+    var query = dbConnection.query("SELECT id, label, answer, type, src FROM question WHERE id NOT IN (?) AND id_quizz = ? ORDER BY RAND() LIMIT 1", [questions, idQuizz], function(err, result) {
         console.log(query.sql);
         //dbConnection.release();
         if(!err) {
@@ -69,6 +75,28 @@ function nextQuestion() {
     });
 }
 
+function sendQuizzList() {
+	var quizzList = [];
+    var query = dbConnection.query("SELECT id, name FROM quizz", function(err, result) {
+        console.log(query.sql);
+        //dbConnection.release();
+        if(!err) {
+            console.log(result);
+			result.forEach(function(row) {
+				console.log(row);
+				quizzList.push(row);
+			});
+			console.log(quizzList);
+
+			io.to(admin).emit('quizzList', quizzList);
+        } else {
+            console.log(err);
+        }
+    });
+
+	return null;
+}
+
 function sendUsers() {
     io.emit('users', users);
 }
@@ -86,6 +114,7 @@ io.on('connection', function(socket){
 	var myNumber = userNumber++;
 	var myName = 'user' + myNumber;
 	var currentUser = {score: 0, name: myName, number: myNumber, id: socket.id, admin: '', identity: 1};
+	var idQuizz = 1;
 	users.push(currentUser);
 
 	//Send back his username
@@ -105,12 +134,14 @@ io.on('connection', function(socket){
 	});
 	socket.on('start', function(msg) {
 		console.log('Start (by ' + users[findIndex(users, currentUser.id)].name + ')');
-		io.emit('start', msg);
-		nextQuestion();
+		console.log(msg);
+		io.emit('start');
+		idQuizz = msg.quizz;
+		nextQuestion(idQuizz);
 	});
 	socket.on('next', function(msg) {
 		console.log('Next (by ' + users[findIndex(users, currentUser.id)].name + ')');
-		nextQuestion();
+		nextQuestion(idQuizz);
 	});
 	socket.on('wrong', function(msg) {
 		console.log('Wrong (by ' + users[findIndex(users, currentUser.id)].name + ')');
@@ -131,6 +162,7 @@ io.on('connection', function(socket){
 		admin = socket.id;
 		users[findIndex(users, socket.id)].admin = 1;
 		io.emit('admin', admin);
+		sendQuizzList();
 	});
 	socket.on('reset', function() {
 		console.log('Reset (by ' + users[findIndex(users, currentUser.id)].name + ')');
@@ -138,10 +170,13 @@ io.on('connection', function(socket){
 		io.emit('reset');
 	});
 	socket.on('saveParameters', function(parameters) {
-		console.log('SaveParameters (by ' + users[findIndex(users, currentUser.id)].name + ')');
-		currentUser.name = parameters.userName;
-		currentUser.identity = parameters.userIdentity;
-        sendUsers();
+		var index = findIndex(users, currentUser.id);
+		if(index >= 0) {
+			console.log('SaveParameters (by ' + users[index].name + ')');
+			currentUser.name = parameters.userName;
+			currentUser.identity = parameters.userIdentity;
+			sendUsers();
+		}
 	});
     socket.on('showAnswer', function() {
         console.log(currentUser.id);

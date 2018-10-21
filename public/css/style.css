@@ -1,8 +1,6 @@
 * { margin: 0; padding: 0; box-sizing: border-box;}
-body { font: 13px Helvetica, Arial; font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;}
-#client {margin-top: 50px;}
-#parameters { border-top: 1px solid white; padding: 8px; position: fixed; bottom: 0; width: 100%; }
-#admin, #bShowAnswer, #clientAnswer, #bUserWrong, #bUserTrue { display : none;}
+#parameters { border-top: 1px solid gray; padding: 8px; position: fixed; bottom: 0; width: 100%; }
+#admin, #bShowAnswer, #clientAnswer, #bUserWrong, #bUserTrue, #bNext { display : none;}
 #messages { list-style-type: none; margin: 0; padding: 0; }
 #messages li { padding: 5px 10px; }
 #messages li:nth-child(odd) { background: #eee; }
@@ -15,3 +13,12 @@ body { font: 13px Helvetica, Arial; font-family: "Montserrat", "Helvetica Neue",
 	font-size: 5em;
 }
 h2 {text-transform: uppercase;}
+.bgFaster {
+	background-color: #f0f8ff;
+}
+.bgBlock {
+	background-color: #ffcccc;
+}
+.bgGood {
+	background-color: #cceecc;
+}

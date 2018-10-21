@@ -16,7 +16,7 @@
     </head>
     <body>
         <ul id="messages"></ul>
-        <div id="client">
+        <div id="client" class="mt-3">
             <button id="bAdmin" class="btn btn-default">ADMIN</button>
             <div class="col-12 text-center">
                 <h2 id="userQuestion"></h2>
@@ -24,9 +24,9 @@
             <div class="col-12 text-center">
                 <button id="bAnswer" disabled="disabled" class="btn btn-primary btn-xl">REPONDRE</button>
             </div>
-            <div class="col-12 text-center">
+            <div class="col-12 text-center mt-3">
+                <button id="bShowAnswer" class="btn btn-primary btn-x2">MONTRER LA REPONSE</button>
                 <span id="time"></span>
-                <button id="bShowAnswer" class="btn btn-primary btn-xl">MONTRER LA REPONSE</button>
                 <h2 id="clientAnswer"></h2>
                 <button id="bUserTrue" class="btn btn-success">CORRECT</button>
                 <button id="bUserWrong" class="btn btn-danger">FAUX</button>
@@ -127,6 +127,8 @@
 						
 					</div>
 					<div id="actions">
+						<select id="sQuizz">
+						</select>
 						<button id="bStart" class="btn btn-default"><i class="fas fa-play"></i> START</button>
 						<button id="bNext" class="btn btn-success">NEXT <i class="fas fa-step-forward"></i></button>
 						<button id="bReset" class="btn btn-default float-right"><i class="fas fa-trash-alt"></i> RESET</button>
